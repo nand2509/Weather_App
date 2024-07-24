@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2e2e2e; /* Dark background */
+            color: #f0f0f0; /* Light text color */
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff9900; /* Bright orange for heading */
+            margin-top: 20px;
+        }
+
+        main {
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #333; /* Slightly lighter dark background */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            color: #ffcc00; /* Light yellow for labels */
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #555;
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6600;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e65c00;
+        }
+
+        .weather-data {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #222; /* Even darker background for the data */
+            border-radius: 10px;
+            color: #e0e0e0; /* Slightly lighter text color */
+            text-align: left;
+        }
+
+        .weather-data p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .weather-data span {
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        .error-message {
+            color: #ff3333; /* Red color for error messages */
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #555;
+            color: #fff;
+        }
+
+        .download-section {
+            margin-top: 20px;
+        }
+
+        .download-section label {
+            font-size: 1.2em;
+            color: #ffcc00;
+        }
+
+        .download-section button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6600;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-section button:hover {
+            background-color: #e65c00;
+        }
+
+        .visible {
+            animation: fadeIn 2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <main>
+        <form method="POST" action="/">
+            <label for="city_name">Enter City Name:</label>
+            <input type="text" id="city_name" name="city_name" required>
+            <button type="submit">Get Weather</button>
+        </form>
+
+        {% if data %}
+        <section id="weather-data" class="weather-data visible">
+            <h2>Weather Data for {{ data['City'] }}</h2>
+            <p><span>Weather Description:</span> {{ data['Weather Description'] }}</p>
+            <p><span>Temperature (°C):</span> {{ data['Temperature (°C)'] }}</p>
+            <p><span>Feels Like (°C):</span> {{ data['Feels Like (°C)'] }}</p>
+            <p><span>Humidity (%):</span> {{ data['Humidity (%)'] }}</p>
+            <p><span>Wind Speed (km/h):</span> {{ data['Wind Speed (km/h)'] }}</p>
+            <p><span>Sunrise (UTC):</span> {{ data['Sunrise (UTC)'] }}</p>
+            <p><span>Sunset (UTC):</span> {{ data['Sunset (UTC)'] }}</p>
+            <p><span>Pressure (hPa):</span> {{ data['Pressure (hPa)'] }}</p>
+            <p><span>Visibility (m):</span> {{ data['Visibility (m)'] }}</p>
+            <p><span>Country:</span> {{ data['Country'] }}</p>
+            <p><span>City:</span> {{ data['City'] }}</p>
+            <p><span>Latitude:</span> {{ data['Latitude'] }}</p>
+            <p><span>Longitude:</span> {{ data['Longitude'] }}</p>
+            <p><span>Timezone (hours):</span> {{ data['Timezone (hours)'] }}</p>
+            <p><span>Wind Degree:</span> {{ data['Wind Degree'] }}</p>
+            <p><span>Wind Gust (km/h):</span> {{ data['Wind Gust (km/h)'] }}</p>
+            <div class="download-section">
+                <label for="format">Download Report as:</label>
+                <select id="format" name="format">
+                    <option value="csv">CSV</option>
+                    <option value="xlsx">XLSX</option>
+                    <option value="html">HTML</option>
+                    <option value="json">JSON</option>
+                </select>
+                <button type="button" onclick="downloadReport()">Download</button>
+            </div>
+        </section>
+        {% elif error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var weatherData = document.getElementById('weather-data');
+            if (weatherData && weatherData.innerHTML.trim() !== '') {
+                weatherData.classList.add('visible');
+            }
+        });
+
+        function downloadReport() {
+            var format = document.getElementById('format').value;
+            var url = `/download/${format}`;
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
